@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class RotMachineCategory implements IRecipeCategory<RotMachineRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(RottenEquipment.MOD_ID, "rot_machine");
-    public static final ResourceLocation TEXTURE = new ResourceLocation(RottenEquipment.MOD_ID, "texture/gui/rot_machine.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(RottenEquipment.MOD_ID, "textures/gui/rot_machine.png");
 
     public static final RecipeType<RotMachineRecipe> ROT_MACHINE_TYPE =
             new RecipeType<>(UID, RotMachineRecipe.class);
