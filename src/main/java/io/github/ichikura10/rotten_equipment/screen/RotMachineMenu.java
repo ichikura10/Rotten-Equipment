@@ -32,13 +32,13 @@ public class RotMachineMenu extends AbstractContainerMenu {
         this.level = inv.player.level();
         this.data = data;
 
-        addPlayerInventory(inv);
-        addPlayerHotbar(inv);
-
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
             this.addSlot(new SlotItemHandler(iItemHandler, 0, 53, 35));
             this.addSlot(new SlotItemHandler(iItemHandler, 1, 111, 35));
         });
+
+        addPlayerInventory(inv);
+        addPlayerHotbar(inv);
 
         addDataSlots(data);
     }
