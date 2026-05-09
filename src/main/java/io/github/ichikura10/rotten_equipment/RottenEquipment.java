@@ -4,10 +4,10 @@ import com.mojang.logging.LogUtils;
 import io.github.ichikura10.rotten_equipment.block.ModBlocks;
 import io.github.ichikura10.rotten_equipment.block.entity.ModBlockEntities;
 import io.github.ichikura10.rotten_equipment.item.ModItems;
+import io.github.ichikura10.rotten_equipment.recipe.ModRecipes;
 import io.github.ichikura10.rotten_equipment.screen.ModMenuTypes;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -34,6 +34,7 @@ public class RottenEquipment {
         ModItems.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
