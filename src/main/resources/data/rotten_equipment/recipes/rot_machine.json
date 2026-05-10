@@ -2,11 +2,11 @@
   "type": "rotten_equipment:rot_machine",
   "ingredients": [
     {
-      "item": "minecraft:coal"
+      "tag": "rotten_equipment:organic_matter"
     }
   ],
   "output": {
-    "count": 7,
-    "item": "minecraft:diamond"
+    "count": 1,
+    "item": "rotten_equipment:rotten_item"
   }
 }
