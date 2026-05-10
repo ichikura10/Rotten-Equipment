@@ -1,5 +1,6 @@
 package io.github.ichikura10.rotten_equipment.block.entity;
 
+import io.github.ichikura10.rotten_equipment.block.ModBlocks;
 import io.github.ichikura10.rotten_equipment.item.ModItems;
 import io.github.ichikura10.rotten_equipment.recipe.RotMachineRecipe;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineMenu;
@@ -17,6 +18,8 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,7 +129,15 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
         if(hasRecipe()) {
-            increaseCraftingProgress();
+            int increaseAmount = 1;
+
+            if (!level.isClientSide()) {
+                if (level.getGameTime() % 20 == 0) {
+                    increaseAmount = changeIncreaseAmount(pLevel, pPos, Blocks.LAVA);
+                }
+            }
+
+            increaseCraftingProgress(increaseAmount);
             setChanged(pLevel, pPos, pState);
 
             if(hasProgressFinished()) {
@@ -185,7 +196,34 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         return progress >= maxProgress;
     }
 
-    private void increaseCraftingProgress() {
-        progress++;
+    private void increaseCraftingProgress(int increaseAmount) {
+        progress += increaseAmount;
+    }
+
+    private int changeIncreaseAmount(Level level, BlockPos currentPos, Block targetBlock) {
+        return switch (countTargetBlocksNearby(level, currentPos, targetBlock)) {
+            case 1 -> 2;
+            case 2 -> 4;
+            case 3 -> 8;
+            case 4 -> 20;
+            case 5 -> 50;
+            case 6 -> 75;
+
+            default -> 1;
+        };
+    }
+
+    private int countTargetBlocksNearby(Level level, BlockPos currentPos, Block targetBlock) {
+        int count = 0;
+
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = currentPos.relative(direction);
+            BlockState neighborState = level.getBlockState(neighborPos);
+            if (neighborState.is(targetBlock)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
