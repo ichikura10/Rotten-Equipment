@@ -41,7 +41,7 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 78;
+    private int maxProgress = 600;
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
