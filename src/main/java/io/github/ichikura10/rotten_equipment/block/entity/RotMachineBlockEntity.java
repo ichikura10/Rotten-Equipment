@@ -1,7 +1,5 @@
 package io.github.ichikura10.rotten_equipment.block.entity;
 
-import io.github.ichikura10.rotten_equipment.block.ModBlocks;
-import io.github.ichikura10.rotten_equipment.item.ModItems;
 import io.github.ichikura10.rotten_equipment.recipe.RotMachineRecipe;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineMenu;
 import net.minecraft.core.BlockPos;
@@ -21,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -127,14 +124,11 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         progress = pTag.getInt("rot_machine.progress");
     }
 
+    int increaseAmount = 1;
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
         if(hasRecipe()) {
-            int increaseAmount = 1;
-
-            if (!level.isClientSide()) {
-                if (level.getGameTime() % 20 == 0) {
-                    increaseAmount = changeIncreaseAmount(pLevel, pPos, Blocks.LAVA);
-                }
+            if (isFirstCraftTick()) {
+                changeIncreaseAmount(pLevel, pPos, Blocks.LAVA);
             }
 
             increaseCraftingProgress(increaseAmount);
@@ -147,6 +141,10 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         } else {
             resetProgress();
         }
+    }
+
+    private boolean isFirstCraftTick() {
+        return progress == 0;
     }
 
     private void resetProgress() {
@@ -200,8 +198,9 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         progress += increaseAmount;
     }
 
-    private int changeIncreaseAmount(Level level, BlockPos currentPos, Block targetBlock) {
-        return switch (countTargetBlocksNearby(level, currentPos, targetBlock)) {
+    private void changeIncreaseAmount(Level level, BlockPos currentPos, Block targetBlock) {
+        if (level.isClientSide()) return;
+        increaseAmount = switch (countTargetBlocksNearby(level, currentPos, targetBlock)) {
             case 1 -> 2;
             case 2 -> 4;
             case 3 -> 8;
