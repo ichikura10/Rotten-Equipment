@@ -2,10 +2,12 @@ package io.github.ichikura10.rotten_equipment.block.entity;
 
 import io.github.ichikura10.rotten_equipment.recipe.RotMachineRecipe;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineMenu;
+import io.github.ichikura10.rotten_equipment.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -128,7 +130,7 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
         if(hasRecipe()) {
             if (isFirstCraftTick()) {
-                changeIncreaseAmount(pLevel, pPos, Blocks.LAVA);
+                changeIncreaseAmount(pLevel, pPos, ModTags.Blocks.ROT_BLOCKS);
             }
 
             increaseCraftingProgress(increaseAmount);
@@ -198,9 +200,9 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         progress += increaseAmount;
     }
 
-    private void changeIncreaseAmount(Level level, BlockPos currentPos, Block targetBlock) {
+    private void changeIncreaseAmount(Level level, BlockPos currentPos, TagKey<Block> targetTag) {
         if (level.isClientSide()) return;
-        increaseAmount = switch (countTargetBlocksNearby(level, currentPos, targetBlock)) {
+        increaseAmount = switch (countTargetBlocksNearby(level, currentPos, targetTag)) {
             case 1 -> 2;
             case 2 -> 4;
             case 3 -> 8;
@@ -212,13 +214,13 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         };
     }
 
-    private int countTargetBlocksNearby(Level level, BlockPos currentPos, Block targetBlock) {
+    private int countTargetBlocksNearby(Level level, BlockPos currentPos, TagKey<Block> targetTag) {
         int count = 0;
 
         for (Direction direction : Direction.values()) {
             BlockPos neighborPos = currentPos.relative(direction);
             BlockState neighborState = level.getBlockState(neighborPos);
-            if (neighborState.is(targetBlock)) {
+            if (neighborState.is(targetTag)) {
                 count++;
             }
         }

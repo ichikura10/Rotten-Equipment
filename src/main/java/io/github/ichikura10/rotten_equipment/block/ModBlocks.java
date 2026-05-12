@@ -20,6 +20,8 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> ROT_MACHINE = registerBlock("rot_machine",
             () -> new RotMachineBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
+    public static final RegistryObject<Block> ROT_BLOCK_1 = registerBlock("rot_block_1",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
