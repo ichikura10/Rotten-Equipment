@@ -1,5 +1,6 @@
 package io.github.ichikura10.rotten_equipment.block.entity;
 
+import io.github.ichikura10.rotten_equipment.block.custom.TieredBlock;
 import io.github.ichikura10.rotten_equipment.recipe.RotMachineRecipe;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineMenu;
 import io.github.ichikura10.rotten_equipment.util.ModTags;
@@ -30,6 +31,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
@@ -202,29 +205,42 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
 
     private void changeIncreaseAmount(Level level, BlockPos currentPos, TagKey<Block> targetTag) {
         if (level.isClientSide()) return;
-        increaseAmount = switch (countTargetBlocksNearby(level, currentPos, targetTag)) {
-            case 1 -> 2;
-            case 2 -> 4;
-            case 3 -> 8;
-            case 4 -> 20;
-            case 5 -> 50;
-            case 6 -> 75;
 
-            default -> 1;
-        };
+        Map<Integer, Integer> tierCounts = countTargetBlocksNearby(level, currentPos, targetTag);
+        int total = 0;
+
+        for (Map.Entry<Integer, Integer> entry : tierCounts.entrySet()) {
+
+            int tier = entry.getKey();
+            int count = entry.getValue();
+
+            // tier1がa個だと (9^(1-1))*a=a , tier2がb個だと (9^(2-1))*b=9b , tier3がc個だと (9^(3-1))*c=81c 増える。
+            total += count * (int) Math.pow(9, tier - 1);
+        }
+
+        increaseAmount = Math.max(total, 1);
     }
 
-    private int countTargetBlocksNearby(Level level, BlockPos currentPos, TagKey<Block> targetTag) {
-        int count = 0;
+    private Map<Integer, Integer> countTargetBlocksNearby(Level level, BlockPos currentPos, TagKey<Block> targetTag) {
+        Map<Integer, Integer> tierCounts = new HashMap<>();
 
         for (Direction direction : Direction.values()) {
             BlockPos neighborPos = currentPos.relative(direction);
             BlockState neighborState = level.getBlockState(neighborPos);
-            if (neighborState.is(targetTag)) {
-                count++;
+
+            if (!neighborState.is(targetTag)) continue;
+
+            Block block = neighborState.getBlock();
+
+            if (block instanceof TieredBlock tieredBlock) {
+                int tier = tieredBlock.getTier();
+                tierCounts.put(
+                        tier,
+                        tierCounts.getOrDefault(tier, 0) + 1
+                        );
             }
         }
 
-        return count;
+        return tierCounts;
     }
 }
