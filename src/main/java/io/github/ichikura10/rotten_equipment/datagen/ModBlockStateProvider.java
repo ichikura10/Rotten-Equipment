@@ -18,7 +18,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerMachineBlock(ModBlocks.ROT_MACHINE);
+        registerMachineBlockWithItem(ModBlocks.ROT_MACHINE);
 
         simpleBlockWithItem(ModBlocks.ROT_BLOCK_1.get(), cubeAll(ModBlocks.ROT_BLOCK_1.get()));
     }
@@ -27,21 +27,24 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
     }
 
-    private void registerMachineBlock(RegistryObject<Block> block) {
+    private void registerMachineBlockWithItem(RegistryObject<Block> block) {
         String name = block.getId().getPath();
+
+        var modelBuilder = models().orientable(
+                name,
+                modLoc("block/" + name + "_side"),
+                modLoc("block/" + name + "_front"),
+                modLoc("block/" + name + "_side")
+        );
 
         getVariantBuilder(block.get()).forAllStates(state -> {
             Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
             return ConfiguredModel.builder()
-                    .modelFile(models().orientable(
-                            name,
-                            modLoc("block/" + name + "_side"),
-                            modLoc("block/" + name + "_front"),
-                            modLoc("block/" + name + "_side")
-                    ))
+                    .modelFile(modelBuilder)
                     .rotationY((int) facing.toYRot())
                     .build();
         });
+        simpleBlockItem(block.get(), modelBuilder);
     }
 }
