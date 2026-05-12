@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "rotten_equipment:block/gem_polishing_station"
+      "model": "rotten_equipment:block/rot_machine"
     }
   }
 }

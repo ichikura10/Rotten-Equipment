@@ -17,7 +17,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         simpleBlockWithItem(ModBlocks.ROT_MACHINE.get(),
-                new ModelFile.UncheckedModelFile(modLoc("block/gem_polishing_station")));
+                new ModelFile.UncheckedModelFile(modLoc("block/rot_machine")));
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
