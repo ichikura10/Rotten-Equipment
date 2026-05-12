@@ -19,6 +19,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         registerMachineBlock(ModBlocks.ROT_MACHINE);
+
+        simpleBlockWithItem(ModBlocks.ROT_BLOCK_1.get(), cubeAll(ModBlocks.ROT_BLOCK_1.get()));
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
