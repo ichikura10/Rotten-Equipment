@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "rotten_equipment:block/rot_machine_front",
+    "side": "rotten_equipment:block/rot_machine_side",
+    "top": "rotten_equipment:block/rot_machine_side"
+  }
+}

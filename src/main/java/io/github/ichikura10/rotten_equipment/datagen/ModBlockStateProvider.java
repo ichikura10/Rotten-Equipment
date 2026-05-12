@@ -2,10 +2,12 @@ package io.github.ichikura10.rotten_equipment.datagen;
 
 import io.github.ichikura10.rotten_equipment.RottenEquipment;
 import io.github.ichikura10.rotten_equipment.block.ModBlocks;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -16,11 +18,28 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockWithItem(ModBlocks.ROT_MACHINE.get(),
-                new ModelFile.UncheckedModelFile(modLoc("block/rot_machine")));
+        registerMachineBlock(ModBlocks.ROT_MACHINE);
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
         simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
+    }
+
+    private void registerMachineBlock(RegistryObject<Block> block) {
+        String name = block.getId().getPath();
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+
+            return ConfiguredModel.builder()
+                    .modelFile(models().orientable(
+                            name,
+                            modLoc("block/" + name + "_side"),
+                            modLoc("block/" + name + "_front"),
+                            modLoc("block/" + name + "_side")
+                    ))
+                    .rotationY((int) facing.toYRot())
+                    .build();
+        });
     }
 }
