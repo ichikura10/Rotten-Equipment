@@ -1,7 +1,6 @@
 package io.github.ichikura10.rotten_equipment.block.entity;
 
 import io.github.ichikura10.rotten_equipment.block.custom.TieredBlock;
-import io.github.ichikura10.rotten_equipment.recipe.ModRecipes;
 import io.github.ichikura10.rotten_equipment.recipe.RotMachineRecipe;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineMenu;
 import io.github.ichikura10.rotten_equipment.util.ModTags;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -181,10 +179,16 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         }
         ItemStack result = recipe.get().getResultItem(getLevel().registryAccess());
 
-        return canInsertAmountIntoOutputSlot(result.getCount()) && canInsertItemIntoOutputSlot(result.getItem());
+        return canInsertAmountIntoOutputSlot(result.getCount()) && canInsertItemIntoOutputSlot(result.getItem()) && hasRequiredCount();
 
     }
 
+    private boolean hasRequiredCount() {
+        Optional<RotMachineRecipe> recipe = getCurrentRecipe();
+        ItemStack stack = this.itemHandler.getStackInSlot(0);
+
+        return recipe.isPresent() && stack.getCount() >= recipe.get().getInputCount();
+    }
     private boolean canInsertItemIntoOutputSlot(Item item) {
         return this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(OUTPUT_SLOT).is(item);
     }

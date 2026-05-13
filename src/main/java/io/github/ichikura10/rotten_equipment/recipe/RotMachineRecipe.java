@@ -16,12 +16,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class RotMachineRecipe implements Recipe<SimpleContainer> {
     private final NonNullList<Ingredient> inputItems;
+    private final int inputCount;
     private final ItemStack output;
     private final ResourceLocation id;
     private final int cookingTime;
 
-    public RotMachineRecipe(NonNullList<Ingredient> inputItems, ItemStack output, ResourceLocation id, int cookingTime) {
+    public RotMachineRecipe(NonNullList<Ingredient> inputItems, int inputCount, ItemStack output, ResourceLocation id, int cookingTime) {
         this.inputItems = inputItems;
+        this.inputCount = inputCount;
         this.output = output;
         this.id = id;
         this.cookingTime = cookingTime;
@@ -75,6 +77,10 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
         return cookingTime;
     }
 
+    public int getInputCount() {
+        return inputCount;
+    }
+
     public static class Type implements RecipeType<RotMachineRecipe> {
         public static final Type INSTANCE = new Type();
         public static final String ID = "rot_machine";
@@ -90,14 +96,21 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
 
             JsonArray ingredients = GsonHelper.getAsJsonArray(pSerializedRecipe, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
+            int inputCount = 1;
 
             for(int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
+                JsonObject ingredientObject = ingredients.get(i).getAsJsonObject();
+
+                inputs.set(i, Ingredient.fromJson(ingredientObject));
+
+                if (ingredientObject.has("count")) {
+                    inputCount = GsonHelper.getAsInt(ingredientObject, "count");
+                }
             }
 
             int cookingTime = GsonHelper.getAsInt(pSerializedRecipe, "cookingTime", 200);
 
-            return new RotMachineRecipe(inputs, output, pRecipeId, cookingTime);
+            return new RotMachineRecipe(inputs, inputCount, output, pRecipeId, cookingTime);
         }
 
         @Override
@@ -108,10 +121,11 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
                 inputs.set(i, Ingredient.fromNetwork(pBuffer));
             }
 
+            int inputCount = pBuffer.readInt();
             ItemStack output = pBuffer.readItem();
             int cookingTime = pBuffer.readInt();
 
-            return new RotMachineRecipe(inputs, output, pRecipeId, cookingTime);
+            return new RotMachineRecipe(inputs, inputCount,output, pRecipeId, cookingTime);
         }
 
         @Override
@@ -122,6 +136,7 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
                 ingredient.toNetwork(pBuffer);
             }
 
+            pBuffer.writeInt(pRecipe.getInputCount());
             pBuffer.writeItemStack(pRecipe.getResultItem(null), false);
             pBuffer.writeInt(pRecipe.getCookingTime());
         }
