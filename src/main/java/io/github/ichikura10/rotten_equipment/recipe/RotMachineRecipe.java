@@ -18,11 +18,13 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
     private final NonNullList<Ingredient> inputItems;
     private final ItemStack output;
     private final ResourceLocation id;
+    private final int cookingTime;
 
-    public RotMachineRecipe(NonNullList<Ingredient> inputItems, ItemStack output, ResourceLocation id) {
+    public RotMachineRecipe(NonNullList<Ingredient> inputItems, ItemStack output, ResourceLocation id, int cookingTime) {
         this.inputItems = inputItems;
         this.output = output;
         this.id = id;
+        this.cookingTime = cookingTime;
     }
 
     @Override
@@ -69,6 +71,10 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
         return Type.INSTANCE;
     }
 
+    public int getCookingTime() {
+        return cookingTime;
+    }
+
     public static class Type implements RecipeType<RotMachineRecipe> {
         public static final Type INSTANCE = new Type();
         public static final String ID = "rot_machine";
@@ -89,7 +95,9 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
 
-            return new RotMachineRecipe(inputs, output, pRecipeId);
+            int cookingTime = GsonHelper.getAsInt(pSerializedRecipe, "cookingTime", 200);
+
+            return new RotMachineRecipe(inputs, output, pRecipeId, cookingTime);
         }
 
         @Override
@@ -101,7 +109,9 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
             }
 
             ItemStack output = pBuffer.readItem();
-            return new RotMachineRecipe(inputs, output, pRecipeId);
+            int cookingTime = pBuffer.readInt();
+
+            return new RotMachineRecipe(inputs, output, pRecipeId, cookingTime);
         }
 
         @Override
@@ -113,6 +123,7 @@ public class RotMachineRecipe implements Recipe<SimpleContainer> {
             }
 
             pBuffer.writeItemStack(pRecipe.getResultItem(null), false);
+            pBuffer.writeInt(pRecipe.getCookingTime());
         }
     }
 }

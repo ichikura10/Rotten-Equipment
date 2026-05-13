@@ -1,6 +1,7 @@
 package io.github.ichikura10.rotten_equipment.block.entity;
 
 import io.github.ichikura10.rotten_equipment.block.custom.TieredBlock;
+import io.github.ichikura10.rotten_equipment.recipe.ModRecipes;
 import io.github.ichikura10.rotten_equipment.recipe.RotMachineRecipe;
 import io.github.ichikura10.rotten_equipment.screen.RotMachineMenu;
 import io.github.ichikura10.rotten_equipment.util.ModTags;
@@ -134,6 +135,7 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         if(hasRecipe()) {
             if (isFirstCraftTick()) {
                 changeIncreaseAmount(pLevel, pPos, ModTags.Blocks.ROT_BLOCKS);
+                changeMaxProgress();
             }
 
             increaseCraftingProgress(increaseAmount);
@@ -146,6 +148,11 @@ public class RotMachineBlockEntity extends BlockEntity implements MenuProvider {
         } else {
             resetProgress();
         }
+    }
+
+    private void changeMaxProgress() {
+        Optional<RotMachineRecipe> recipe = getCurrentRecipe();
+        maxProgress = recipe.get().getCookingTime();
     }
 
     private boolean isFirstCraftTick() {

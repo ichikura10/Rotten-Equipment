@@ -8,5 +8,6 @@
   "output": {
     "count": 1,
     "item": "rotten_equipment:rotten_item"
-  }
+  },
+  "cookingTime": 600
 }
