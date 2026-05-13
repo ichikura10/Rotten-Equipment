@@ -1,0 +1,14 @@
+{
+  "type": "rotten_equipment:rot_machine",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "rotten_equipment:rotten_item"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "rotten_equipment:rot_block_1"
+  },
+  "cookingTime": 1200
+}
