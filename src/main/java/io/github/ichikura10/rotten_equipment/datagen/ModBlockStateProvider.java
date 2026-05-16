@@ -21,6 +21,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerMachineBlockWithItem(ModBlocks.ROT_MACHINE);
 
         simpleBlockWithItem(ModBlocks.ROT_BLOCK_1.get(), cubeAll(ModBlocks.ROT_BLOCK_1.get()));
+        simpleBlockWithItem(ModBlocks.ROT_BLOCK_2.get(), cubeAll(ModBlocks.ROT_BLOCK_2.get()));
+        simpleBlockWithItem(ModBlocks.ROT_BLOCK_3.get(), cubeAll(ModBlocks.ROT_BLOCK_3.get()));
+        simpleBlockWithItem(ModBlocks.ROT_BLOCK_4.get(), cubeAll(ModBlocks.ROT_BLOCK_4.get()));
+        simpleBlockWithItem(ModBlocks.ROT_BLOCK_5.get(), cubeAll(ModBlocks.ROT_BLOCK_5.get()));
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {

@@ -25,6 +25,10 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     protected void generate() {
         this.dropSelf(ModBlocks.ROT_MACHINE.get());
         this.dropSelf(ModBlocks.ROT_BLOCK_1.get());
+        this.dropSelf(ModBlocks.ROT_BLOCK_2.get());
+        this.dropSelf(ModBlocks.ROT_BLOCK_3.get());
+        this.dropSelf(ModBlocks.ROT_BLOCK_4.get());
+        this.dropSelf(ModBlocks.ROT_BLOCK_5.get());
     }
 
     protected LootTable.Builder createCopperLikeOreDrops(Block pBlock, Item item) {

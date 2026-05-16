@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
-    "rotten_equipment:rot_block_1"
+    "rotten_equipment:rot_block_1",
+    "rotten_equipment:rot_block_2",
+    "rotten_equipment:rot_block_3",
+    "rotten_equipment:rot_block_4",
+    "rotten_equipment:rot_block_5"
   ]
 }
